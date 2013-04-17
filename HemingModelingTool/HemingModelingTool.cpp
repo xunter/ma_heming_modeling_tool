@@ -145,10 +145,11 @@ public:
 
 	BinaryMatrix *Transpose();
 	BinaryMatrix *ConcatWidth(BinaryMatrix *other);
+	BinaryMatrix *Mul(BinaryMatrix *other);
 
-
-	static BinaryMatrix *Mul(BinaryMatrix *m1, BinaryMatrix *m2);
 	static BinaryMatrix *CreateIdentityMatrix(int size);
+	static BinaryMatrix *CreateVector(int size);
+	static BinaryMatrix *CreateVectorFromBinaryData(byte *data, int bitLen);
 };
 
 BinaryMatrix::BinaryMatrix(int rowSize, int colSize) {
@@ -209,14 +210,49 @@ BinaryMatrix *BinaryMatrix::ConcatWidth(BinaryMatrix *other) {
 	return matrix;
 };
 
+BinaryMatrix *BinaryMatrix::Mul(BinaryMatrix *other) {
+	if (_col != other->GetRowCount()) return null;
+	BinaryMatrix *matrix = new BinaryMatrix(_row, other->GetColCount());
+	for (int i = 0; i < _row; i++) {
+		for (int j = 0; j < GetColCount(); j++) {				
+			bool temp;
+			for (int r = 0; r < _col; r++) {
+				temp |= GetItem(i, r) & other->GetItem(r, j);
+			}
+			matrix->SetItem(i, j, temp);
+		}
+	}
+	return matrix;
+};
+
 BinaryMatrix *BinaryMatrix::CreateIdentityMatrix(int size) {
 	BinaryMatrix *matrix = new BinaryMatrix(size, size);
 	for (int i = 0; i < size; i++) matrix->SetItem(i, i, true);
 	return matrix;
 };
 
-BinaryMatrix *BinaryMatrix::Mul(BinaryMatrix *m1, BinaryMatrix *m2) {
-	if (m1->GetColCount() != m2->GetRowCount()) return null;
+BinaryMatrix *BinaryMatrix::CreateVector(int size) {
+	BinaryMatrix *matrix = new BinaryMatrix(1, size);
+	return matrix;	
+};
+
+BinaryMatrix *BinaryMatrix::CreateVectorFromBinaryData(byte *data, int bitLen) {
+	BinaryMatrix *matrix = CreateVector(bitLen);
+	int byteLen = ByteUtil::GetByteLenForDataLen(bitLen);
+
+	for (int i = 0; i < byteLen; i++) {
+		byte b = data[i];
+		for (int j = 0; j < BYTE_BIT_LEN; j++) {
+			int itemIndex = i * BYTE_BIT_LEN + j;
+			if (itemIndex <= bitLen) {
+				byte bitByte = ByteUtil::GetOnlyBitByte(b, j);
+				if (bitByte != 0) {
+					matrix->SetItem(1, itemIndex, true);
+				} 
+			}
+		}
+	}
+	return matrix;
 };
 
 class HemingCoder : public Coder {
@@ -226,10 +262,13 @@ private:
 	BinaryMatrix *_checkingMatrix;
 	BinaryMatrix *_syndromeMatrix;
 	BinaryMatrix *_identityMatrix;
+	BinaryMatrix *_pMatrix;
 	
+	void InitPMatrix();
 	void InitGeneratingMatrix();
 	void InitCheckingMatrix();
 	void InitSyndromeMatrix();
+
 public:
 	HemingCoder(int dataBlockLen, int entireBlockLen, int additionalBlockLen);
 	void Init();	
@@ -250,9 +289,29 @@ void HemingCoder::Init() {
 	InitSyndromeMatrix();
 };
 
+void HemingCoder::InitGeneratingMatrix() {
+	_generatingMatrix = _pMatrix->ConcatWidth(_identityMatrix);
+};
+
+void HemingCoder::InitCheckingMatrix() {
+	_checkingMatrix = _identityMatrix->ConcatWidth( _pMatrix->Transpose() );
+};
+
+void HemingCoder::InitPMatrix() {
+	_pMatrix = new BinaryMatrix(_dataBlockLen, _dataBlockLen);
+	
+	for (int i = 0; i < _dataBlockLen; i++) {
+		for (int j = 0; j < _dataBlockLen; j++) {
+			bool val = j != i;
+			_pMatrix->SetItem(i, j, val);
+		}	
+	}
+};
+
 byte *HemingCoder::Encode(byte* src)
 {
-
+	BinaryMatrix *originalDataVector = BinaryMatrix::CreateVectorFromBinaryData(src, _dataBlockLen);
+	BinaryMatrix *encodedMatrix = originalDataVector->Mul(_generatingMatrix);
 	return null;
 }
 
