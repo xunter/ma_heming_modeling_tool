@@ -73,8 +73,34 @@ public:
 	};
 
 	static byte GetOnlyBitByte(byte &b, int bitPos) {		
-		int mask = pow(2.0, bitPos);
+		byte mask = (byte)pow(2.0, bitPos);
 		return b & mask;
+	};
+
+	static byte InvertByte(byte b) {
+		for (int i = 0; i < BYTE_BIT_LEN; i++) {
+			byte bitByte = GetOnlyBitByte(b, i);
+			if (!IsBitSettedInByte(b, i)) {
+				SetBit(b, i);
+			} else {
+				UnsetBit(b, i);
+			}
+		}
+	};
+
+	static void SetBit(byte &b, int bitPos) {
+		byte ffByte = 0xff;
+		b |= GetOnlyBitByte(ffByte, bitPos);
+	};
+
+	static void UnsetBit(byte &b, int bitPos) {
+		byte ffByte = 0xff;
+		b &= InvertByte(GetOnlyBitByte(ffByte, bitPos));
+	};
+
+	static bool IsBitSettedInByte(byte &b, int bitPos) {
+		byte bitByte = GetOnlyBitByte(b, bitPos);
+		return bitByte != 0x00;
 	};
 };
 
@@ -140,16 +166,96 @@ public:
 	int GetColCount();
 	void SetItem(int row, int col, bool val);
 	bool GetItem(int row, int col);
+
 	byte *StoreAsByteArray();
-	void LoadFromByteArray(byte *b);
 
 	BinaryMatrix *Transpose();
 	BinaryMatrix *ConcatWidth(BinaryMatrix *other);
+	BinaryMatrix *ConcatHeight(BinaryMatrix *other);
 	BinaryMatrix *Mul(BinaryMatrix *other);
-
+	BinaryMatrix *Crop(int rowStart, int rowEnd, int colStart, int colEnd);
+	int GetBitsLength();
+	bool IsVector();
+	bool IsZero();
+	
 	static BinaryMatrix *CreateIdentityMatrix(int size);
 	static BinaryMatrix *CreateVector(int size);
 	static BinaryMatrix *CreateVectorFromBinaryData(byte *data, int bitLen);
+
+	static BinaryMatrix *LoadFromByteArray(byte *data, int row, int col);
+};
+
+int BinaryMatrix::GetColCount() { return _col; };
+int BinaryMatrix::GetRowCount() { return _row; };
+int BinaryMatrix::GetBitsLength() { return _row * _col; };
+
+BinaryMatrix *BinaryMatrix::Crop(int rowStart, int rowEnd, int colStart, int colEnd) {
+	int newRowCount = rowEnd - rowStart + 1;
+	int newColCount = colEnd - colStart + 1;
+	BinaryMatrix *matrix = new BinaryMatrix(newRowCount, newColCount);
+	for (int i = rowStart; i <= rowEnd; i++) {
+		for (int j = colStart; j <= colEnd; j++) {
+			matrix->SetItem(i - rowStart, j - colStart, GetItem(i, j));
+		}
+	}
+	return matrix;
+};
+
+bool BinaryMatrix::IsZero() {
+	for (int i = 0; i < _row; i++)
+		for (int j = 0; j < _col; j++)
+			if (GetItem(i, j) == true) return false;
+	return true;
+};
+
+bool BinaryMatrix::IsVector() {
+	return _row == 1;
+};
+
+BinaryMatrix *BinaryMatrix::LoadFromByteArray(byte *data, int row, int col) {
+	BinaryMatrix *matrix = new BinaryMatrix(row, col);
+	int dataLen = matrix->GetBitsLength();
+	int byteArrayLen = ByteUtil::GetByteLenForDataLen(dataLen);
+	int arrIndex = 0;
+	int bitCounter = 0;
+
+	for (int i = 0; i < row; i++) {
+		for (int j = 0; j < col; j++) {
+			if (bitCounter >= BYTE_BIT_LEN) {
+				arrIndex++;
+				bitCounter = 0;
+			}
+			byte tempByte = data[arrIndex];
+			matrix->SetItem(i, j, ByteUtil::IsBitSettedInByte(tempByte, bitCounter));
+		}
+	}
+	return matrix;
+};
+
+byte *BinaryMatrix::StoreAsByteArray() {
+	int dataLen = GetBitsLength();
+	int byteArrayLen = ByteUtil::GetByteLenForDataLen(dataLen);
+	byte *arr = new byte[byteArrayLen];
+	int arrIndex = 0;
+	int byteFillCounter = 0;
+	arr[0] = 0x00;
+	for (int i = 0; i < _row; i++) {
+		for (int j = 0; j < _col; j++) {
+			bool item = GetItem(i, j);
+			if (byteFillCounter < BYTE_BIT_LEN) {
+				byteFillCounter++;
+			} else {
+				byteFillCounter = 0;
+				arrIndex++;
+				arr[arrIndex] = 0x00;
+			}
+			byte tempByte = arr[arrIndex];
+			if (item == true) {
+				ByteUtil::SetBit(tempByte, byteFillCounter);
+			}
+		}
+	}
+	return arr;
 };
 
 BinaryMatrix::BinaryMatrix(int rowSize, int colSize) {
@@ -161,14 +267,14 @@ BinaryMatrix::BinaryMatrix(int rowSize, int colSize) {
 
 BinaryMatrix::~BinaryMatrix() {
 	for (int i = 0; i < _row; i++) {
-		delete _matrixArr[i];
+		delete [] _matrixArr[i];
 	}
-	delete _matrixArr;
+	delete [] _matrixArr;
 };
 
 void BinaryMatrix::InitMatrixArray() {	
 	bool **matrix = new bool*[_row];
-	for (int i = 0; i < _col; i++) {
+	for (int i = 0; i < _row; i++) {
 		matrix[i] = new bool[_col];
 	}
 	_matrixArr = matrix;
@@ -183,10 +289,14 @@ bool BinaryMatrix::GetItem(int row, int col) {
 };
 
 BinaryMatrix *BinaryMatrix::Transpose() {
-	BinaryMatrix *matrix = new BinaryMatrix(_col, _row);
-	for (int i = 0; i < _row; i++)
-		for (int j = 0; j < _col; j++)
-			matrix->SetItem(j, i, GetItem(i, j));
+	int tRowCount = _col;
+	int tColCount = _row;
+	BinaryMatrix *matrix = new BinaryMatrix(tRowCount, tColCount);
+	for (int i = 0; i < tRowCount; i++)
+		for (int j = 0; j < tColCount; j++) {
+			bool item = GetItem(j, i);
+			matrix->SetItem(i, j, item);
+		}
 	return matrix;
 };
 
@@ -202,7 +312,29 @@ BinaryMatrix *BinaryMatrix::ConcatWidth(BinaryMatrix *other) {
 			if (j < edge) {
 				matrix->SetItem(i, j, GetItem(i, j));
 			} else {
-				matrix->SetItem(i, j, other->GetItem(i, j));
+				int otherCol = j - _col;
+				matrix->SetItem(i, j, other->GetItem(i, otherCol));
+			}
+		}
+	}
+
+	return matrix;
+};
+
+BinaryMatrix *BinaryMatrix::ConcatHeight(BinaryMatrix *other) {
+	if (_col != other->GetColCount()) return null;
+
+	int resultRowCount = _row + other->GetRowCount();
+	BinaryMatrix *matrix = new BinaryMatrix(resultRowCount, _col);
+
+	int edge = _row;
+	for (int i = 0; i < _col; i++) {
+		for (int j = 0; j < resultRowCount; j++) {
+			if (j < edge) {
+				matrix->SetItem(j, i, GetItem(j, i));
+			} else {
+				int otherRow = j - _row;
+				matrix->SetItem(j, i, other->GetItem(otherRow, i));
 			}
 		}
 	}
@@ -260,17 +392,21 @@ private:
 	int _dataBlockLen, _entireBlockLen, _additionalBlockLen;	
 	BinaryMatrix *_generatingMatrix;
 	BinaryMatrix *_checkingMatrix;
-	BinaryMatrix *_syndromeMatrix;
-	BinaryMatrix *_identityMatrix;
+	BinaryMatrix *_identityGeneratingMatrix;
+	BinaryMatrix *_identityCheckingMatrix;
 	BinaryMatrix *_pMatrix;
 	
+	void InitIdentityGeneratingMatrix();
+	void InitIdentityCheckingMatrix();
 	void InitPMatrix();
 	void InitGeneratingMatrix();
 	void InitCheckingMatrix();
-	void InitSyndromeMatrix();
+
+	void FixErrorBySyndrome(BinaryMatrix *receivedVector, BinaryMatrix *syndrome);
 
 public:
 	HemingCoder(int dataBlockLen, int entireBlockLen, int additionalBlockLen);
+	~HemingCoder();
 	void Init();	
 	virtual byte *Encode(byte *src);
 	virtual byte *Decode(byte *src);
@@ -282,43 +418,120 @@ HemingCoder::HemingCoder(int dataBlockLen, int entireBlockLen, int additionalBlo
 	_additionalBlockLen = additionalBlockLen;
 }
 
+HemingCoder::~HemingCoder() {
+	Object::Clean(_generatingMatrix);
+	Object::Clean(_checkingMatrix);
+	Object::Clean(_pMatrix);
+	Object::Clean(_identityGeneratingMatrix);
+	Object::Clean(_identityCheckingMatrix);
+};
+
 void HemingCoder::Init() {
-	_identityMatrix = BinaryMatrix::CreateIdentityMatrix(_dataBlockLen);
+	InitIdentityGeneratingMatrix();
+	InitIdentityCheckingMatrix();
+	InitPMatrix();
 	InitGeneratingMatrix();
 	InitCheckingMatrix();
-	InitSyndromeMatrix();
+};
+
+void HemingCoder::InitIdentityGeneratingMatrix() {
+	_identityGeneratingMatrix = BinaryMatrix::CreateIdentityMatrix(_dataBlockLen);
+};
+
+void HemingCoder::InitIdentityCheckingMatrix() {
+	_identityCheckingMatrix = BinaryMatrix::CreateIdentityMatrix(_dataBlockLen);
 };
 
 void HemingCoder::InitGeneratingMatrix() {
-	_generatingMatrix = _pMatrix->ConcatWidth(_identityMatrix);
+	_generatingMatrix = _pMatrix->ConcatWidth(_identityGeneratingMatrix);
 };
 
 void HemingCoder::InitCheckingMatrix() {
-	_checkingMatrix = _identityMatrix->ConcatWidth( _pMatrix->Transpose() );
+	BinaryMatrix *pMatrixTranspose = _pMatrix->Transpose();
+	_checkingMatrix = pMatrixTranspose->ConcatHeight( _identityCheckingMatrix );
+	Object::Clean(pMatrixTranspose);
 };
 
 void HemingCoder::InitPMatrix() {
-	_pMatrix = new BinaryMatrix(_dataBlockLen, _dataBlockLen);
+	int pRowCount = _additionalBlockLen;
+	int pColCount = _dataBlockLen;
+	_pMatrix = new BinaryMatrix(pRowCount, pColCount);
 	
-	for (int i = 0; i < _dataBlockLen; i++) {
-		for (int j = 0; j < _dataBlockLen; j++) {
-			bool val = j != i;
-			_pMatrix->SetItem(i, j, val);
-		}	
+	/*
+	int maxNum = pow(2.0, _additionalBlockLen + 1);
+	byte *numArr = new byte[_dataBlockLen];
+	int numArrIndex = 0;
+	for (byte j = 1; j <= maxNum; j++) {
+		numArr[numArrIndex] = j;
+		numArrIndex++;
+		if (++numArrIndex >= _dataBlockLen) break;
 	}
+	*/
+	
+	for (int i = 0; i < pRowCount; i++) {		
+		for (int j = 0; j < pColCount; j++) {
+			_pMatrix->SetItem(i, j, i != j);
+		}		
+	}
+};
+
+void HemingCoder::FixErrorBySyndrome(BinaryMatrix *receivedVector, BinaryMatrix *syndrome) {
+	byte *syndromeArr = syndrome->StoreAsByteArray();
+	byte syndromeByte = syndromeArr[0];
+	int fixIndex = syndromeByte;
+	receivedVector->SetItem(0, fixIndex, !receivedVector->GetItem(0, fixIndex));
 };
 
 byte *HemingCoder::Encode(byte* src)
 {
 	BinaryMatrix *originalDataVector = BinaryMatrix::CreateVectorFromBinaryData(src, _dataBlockLen);
 	BinaryMatrix *encodedMatrix = originalDataVector->Mul(_generatingMatrix);
-	return null;
+	byte *encodedData = encodedMatrix->StoreAsByteArray();
+
+	Object::Clean(originalDataVector);
+	Object::Clean(encodedMatrix);
+
+	return encodedData;
 }
 
 byte *HemingCoder::Decode(byte* src)
 {
-	return null;
+	BinaryMatrix *receivedVector = BinaryMatrix::CreateVectorFromBinaryData(src, _entireBlockLen);
+	BinaryMatrix *syndromeVector = receivedVector->Mul(_checkingMatrix);
+
+	bool errorOccurred = syndromeVector->IsZero();
+
+	if (errorOccurred) {
+		FixErrorBySyndrome(receivedVector, syndromeVector);
+	};
+
+	BinaryMatrix *decodedMatrix = receivedVector->Crop(0, 0, 0, _dataBlockLen);
+	byte *decodedData = decodedMatrix->StoreAsByteArray();
+
+	Object::Clean(receivedVector);
+	Object::Clean(syndromeVector);
+	Object::Clean(decodedMatrix);
+
+	return decodedData;
 }
+
+class PMatrixRowGenerator : public Object {
+private:
+	int _rowSize;
+	int _currNum;
+public:
+	PMatrixRowGenerator(int rowSize);
+
+	bool *GetNextRow();
+};
+
+PMatrixRowGenerator::PMatrixRowGenerator(int rowSize) {
+	_rowSize = rowSize;
+};
+
+bool *PMatrixRowGenerator::GetNextRow() {
+	return null;
+};
 
 class DataBlockGenerator : public Object {
 protected:
@@ -509,7 +722,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//Init random
 	srand((unsigned)time(0));
 
-	int stepCount = 1000; //Количество инетараций
+	int stepCount = 10; //Количество инетараций
 	int m = 3; //Количество дополнительных разрядов
 	float p0 = 0.01; //Вероятность искажения бита при передаче
 	//vol
@@ -524,8 +737,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "Encoded block bits: " << encodedBlockLen << endl;
 	cout << "Noise probability: " << p0 * 100 << " %" << endl;
 
-	//Coder *coder = new HemingCoder();
-	Coder *coder = new FakeCoder(dataBlockLen, m);
+	HemingCoder *coder = new HemingCoder(dataBlockLen, encodedBlockLen, m);
+	coder->Init();
+	//Coder *coder = new FakeCoder(dataBlockLen, m);
 	DataBlockGenerator *generator = new RandomDataBlockGenerator(dataBlockLen);
 	byte* b = generator->GenerateBlock();
 	ModelingEngine *modelingEngine = new ModelingEngine(coder, generator, p0, dataBlockLen);

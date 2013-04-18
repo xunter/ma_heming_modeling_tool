@@ -1,31 +1,32 @@
-﻿Build started 18.04.2013 0:13:49.
-     1>Project "C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\HemingModelingTool\HemingModelingTool.vcxproj" on node 2 (rebuild target(s)).
-     1>_PrepareForClean:
-         Deleting file "Debug\HemingModelingTool.lastbuildstate".
-       InitializeBuildStatus:
+﻿Build started 4/18/2013 4:31:14 PM.
+     1>Project "C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\HemingModelingTool\HemingModelingTool.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
          Creating "Debug\HemingModelingTool.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Debug\HemingModelingTool.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
-         stdafx.cpp
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\HemingModelingTool.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt HemingModelingTool.cpp
+         All outputs are up-to-date.
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\HemingModelingTool.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt HemingModelingTool.cpp
          HemingModelingTool.cpp
-     1>c:\users\xunter\documents\education\ma_diser\practice\hemingmodelingtool\hemingmodelingtool\hemingmodelingtool.cpp(79): warning C4091: 'static ' : ignored on left of 'ByteUtil' when no variable is declared
-     1>c:\users\xunter\documents\education\ma_diser\practice\hemingmodelingtool\hemingmodelingtool\hemingmodelingtool.cpp(39): warning C4244: 'return' : conversion from 'float' to 'int', possible loss of data
-     1>c:\users\xunter\documents\education\ma_diser\practice\hemingmodelingtool\hemingmodelingtool\hemingmodelingtool.cpp(76): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
-     1>c:\users\xunter\documents\education\ma_diser\practice\hemingmodelingtool\hemingmodelingtool\hemingmodelingtool.cpp(512): warning C4305: 'initializing' : truncation from 'double' to 'float'
-     1>c:\users\xunter\documents\education\ma_diser\practice\hemingmodelingtool\hemingmodelingtool\hemingmodelingtool.cpp(515): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\xunter\documents\visual studio 2010\projects\ma\heming_modeling_tool\hemingmodelingtool\hemingmodelingtool.cpp(105): warning C4091: 'static ' : ignored on left of 'ByteUtil' when no variable is declared
+     1>c:\users\xunter\documents\visual studio 2010\projects\ma\heming_modeling_tool\hemingmodelingtool\hemingmodelingtool.cpp(39): warning C4244: 'return' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\xunter\documents\visual studio 2010\projects\ma\heming_modeling_tool\hemingmodelingtool\hemingmodelingtool.cpp(727): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>c:\users\xunter\documents\visual studio 2010\projects\ma\heming_modeling_tool\hemingmodelingtool\hemingmodelingtool.cpp(730): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
        ManifestResourceCompile:
-         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\HemingModelingTool.exe.embed.manifest.res" Debug\HemingModelingTool_manifest.rc 
+         All outputs are up-to-date.
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\Debug\HemingModelingTool.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\HemingModelingTool.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\Debug\HemingModelingTool.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\Debug\HemingModelingTool.lib" /MACHINE:X86 Debug\HemingModelingTool.exe.embed.manifest.res
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\Debug\HemingModelingTool.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\HemingModelingTool.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\Debug\HemingModelingTool.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\Debug\HemingModelingTool.lib" /MACHINE:X86 Debug\HemingModelingTool.exe.embed.manifest.res
          Debug\HemingModelingTool.obj
          Debug\stdafx.obj
-     1>HemingModelingTool.obj : error LNK2019: unresolved external symbol "public: int __thiscall BinaryMatrix::GetColCount(void)" (?GetColCount@BinaryMatrix@@QAEHXZ) referenced in function "public: class BinaryMatrix * __thiscall BinaryMatrix::ConcatWidth(class BinaryMatrix *)" (?ConcatWidth@BinaryMatrix@@QAEPAV1@PAV1@@Z)
-     1>HemingModelingTool.obj : error LNK2019: unresolved external symbol "public: int __thiscall BinaryMatrix::GetRowCount(void)" (?GetRowCount@BinaryMatrix@@QAEHXZ) referenced in function "public: class BinaryMatrix * __thiscall BinaryMatrix::ConcatWidth(class BinaryMatrix *)" (?ConcatWidth@BinaryMatrix@@QAEPAV1@PAV1@@Z)
-     1>HemingModelingTool.obj : error LNK2019: unresolved external symbol "private: void __thiscall HemingCoder::InitSyndromeMatrix(void)" (?InitSyndromeMatrix@HemingCoder@@AAEXXZ) referenced in function "public: void __thiscall HemingCoder::Init(void)" (?Init@HemingCoder@@QAEXXZ)
-     1>C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\Debug\HemingModelingTool.exe : fatal error LNK1120: 3 unresolved externals
-     1>Done Building Project "C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\HemingModelingTool\HemingModelingTool.vcxproj" (rebuild target(s)) -- FAILED.
+       Manifest:
+         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\HemingModelingTool.exe.embed.manifest" /manifest Debug\HemingModelingTool.exe.intermediate.manifest
+         All outputs are up-to-date.
+       LinkEmbedManifest:
+         All outputs are up-to-date.
+         HemingModelingTool.vcxproj -> C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\Debug\HemingModelingTool.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\HemingModelingTool.unsuccessfulbuild".
+         Touching "Debug\HemingModelingTool.lastbuildstate".
+     1>Done Building Project "C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\HemingModelingTool\HemingModelingTool.vcxproj" (build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:02.89
+Time Elapsed 00:00:01.14
