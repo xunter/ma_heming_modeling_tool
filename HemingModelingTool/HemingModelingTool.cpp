@@ -379,12 +379,53 @@ BinaryMatrix *BinaryMatrix::CreateVectorFromBinaryData(byte *data, int bitLen) {
 			if (itemIndex <= bitLen) {
 				byte bitByte = ByteUtil::GetOnlyBitByte(b, j);
 				if (bitByte != 0) {
-					matrix->SetItem(1, itemIndex, true);
+					matrix->SetItem(0, itemIndex, true);
 				} 
 			}
 		}
 	}
 	return matrix;
+};
+
+
+class PMatrixColGenerator : public Object {
+private:
+	int _rowSize;
+	int _currNum;
+	int _currTwoPower;
+
+	void ComputeNextNum();
+	BinaryMatrix *ConvertNumToBinaryVector(int num);
+public:
+	PMatrixColGenerator(int rowSize);
+
+	BinaryMatrix *GetNextCol();
+};
+
+BinaryMatrix *PMatrixColGenerator::ConvertNumToBinaryVector(int num) {
+	BinaryMatrix *matrix = new BinaryMatrix(_rowSize, 1);
+	for (int i = 0; i < _rowSize; i++) {
+		byte b = (byte)_currNum;
+		matrix->SetItem(i, 0, ByteUtil::IsBitSettedInByte(b, i));
+	}
+	return matrix;
+};
+
+PMatrixColGenerator::PMatrixColGenerator(int rowSize) {
+	_currNum = 0;
+	_currTwoPower = 0;
+	_rowSize = rowSize;
+};
+
+BinaryMatrix *PMatrixColGenerator::GetNextCol() {
+	ComputeNextNum();
+	return ConvertNumToBinaryVector(_currNum);
+};
+
+void PMatrixColGenerator::ComputeNextNum() {
+	while (true) {
+		if (++_currNum != pow(2.0, _currTwoPower++)) break;
+	}
 };
 
 class HemingCoder : public Coder {
@@ -395,7 +436,7 @@ private:
 	BinaryMatrix *_identityGeneratingMatrix;
 	BinaryMatrix *_identityCheckingMatrix;
 	BinaryMatrix *_pMatrix;
-	
+		
 	void InitIdentityGeneratingMatrix();
 	void InitIdentityCheckingMatrix();
 	void InitPMatrix();
@@ -403,7 +444,6 @@ private:
 	void InitCheckingMatrix();
 
 	void FixErrorBySyndrome(BinaryMatrix *receivedVector, BinaryMatrix *syndrome);
-
 public:
 	HemingCoder(int dataBlockLen, int entireBlockLen, int additionalBlockLen);
 	~HemingCoder();
@@ -434,25 +474,26 @@ void HemingCoder::Init() {
 	InitCheckingMatrix();
 };
 
+void HemingCoder::InitIdentityCheckingMatrix() {
+	_identityCheckingMatrix = BinaryMatrix::CreateIdentityMatrix(_additionalBlockLen);
+};
+
 void HemingCoder::InitIdentityGeneratingMatrix() {
 	_identityGeneratingMatrix = BinaryMatrix::CreateIdentityMatrix(_dataBlockLen);
 };
 
-void HemingCoder::InitIdentityCheckingMatrix() {
-	_identityCheckingMatrix = BinaryMatrix::CreateIdentityMatrix(_dataBlockLen);
+void HemingCoder::InitCheckingMatrix() {
+	_checkingMatrix = _pMatrix->ConcatWidth(_identityCheckingMatrix);
 };
 
 void HemingCoder::InitGeneratingMatrix() {
-	_generatingMatrix = _pMatrix->ConcatWidth(_identityGeneratingMatrix);
-};
-
-void HemingCoder::InitCheckingMatrix() {
 	BinaryMatrix *pMatrixTranspose = _pMatrix->Transpose();
-	_checkingMatrix = pMatrixTranspose->ConcatHeight( _identityCheckingMatrix );
+	_generatingMatrix = _identityGeneratingMatrix->ConcatWidth( pMatrixTranspose );
 	Object::Clean(pMatrixTranspose);
 };
 
 void HemingCoder::InitPMatrix() {
+	PMatrixColGenerator pMatrixColGen(_dataBlockLen);
 	int pRowCount = _additionalBlockLen;
 	int pColCount = _dataBlockLen;
 	_pMatrix = new BinaryMatrix(pRowCount, pColCount);
@@ -468,10 +509,14 @@ void HemingCoder::InitPMatrix() {
 	}
 	*/
 	
-	for (int i = 0; i < pRowCount; i++) {		
-		for (int j = 0; j < pColCount; j++) {
-			_pMatrix->SetItem(i, j, i != j);
-		}		
+	int twoPower = 0;
+
+	for (int j = 0; j < pColCount; j++) {		
+		BinaryMatrix *pMatrixCol = pMatrixColGen.GetNextCol();
+		for (int i = 0; i < pRowCount; i++) {
+			_pMatrix->SetItem(i, j, pMatrixCol->GetItem(i, 0));
+		}
+		Object::Clean(pMatrixCol);
 	}
 };
 
@@ -514,24 +559,6 @@ byte *HemingCoder::Decode(byte* src)
 
 	return decodedData;
 }
-
-class PMatrixRowGenerator : public Object {
-private:
-	int _rowSize;
-	int _currNum;
-public:
-	PMatrixRowGenerator(int rowSize);
-
-	bool *GetNextRow();
-};
-
-PMatrixRowGenerator::PMatrixRowGenerator(int rowSize) {
-	_rowSize = rowSize;
-};
-
-bool *PMatrixRowGenerator::GetNextRow() {
-	return null;
-};
 
 class DataBlockGenerator : public Object {
 protected:
