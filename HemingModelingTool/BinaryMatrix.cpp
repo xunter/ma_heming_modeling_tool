@@ -202,3 +202,10 @@ BinaryMatrix *BinaryMatrix::CreateVectorFromBinaryData(byte *data, int bitLen) {
 	}
 	return matrix;
 };
+
+bool BinaryMatrix::IsSubMatrixEquals(int rowStart, int rowEnd, int colStart, int colEnd, BinaryMatrix *other) {
+	for (int i = rowStart; i <= rowEnd; i++)
+		for (int j = colStart; j <= colEnd; j++)
+			if (GetItem(i, j) != other->GetItem())
+	return true;
+};

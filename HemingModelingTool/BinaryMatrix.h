@@ -12,6 +12,7 @@ private:
 public:
 	BinaryMatrix(int rowSize, int colSize);
 	~BinaryMatrix();
+
 	int GetRowCount();
 	int GetColCount();
 	void SetItem(int row, int col, bool val);
@@ -27,6 +28,8 @@ public:
 	int GetBitsLength();
 	bool IsVector();
 	bool IsZero();
+
+	bool IsSubMatrixEquals(int rowStart, int rowEnd, int colStart, int colEnd, BinaryMatrix *other);
 	
 	static BinaryMatrix *CreateIdentityMatrix(int size);
 	static BinaryMatrix *CreateVector(int size);
