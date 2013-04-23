@@ -17,6 +17,7 @@ public:
 	int GetColCount();
 	void SetItem(int row, int col, bool val);
 	bool GetItem(int row, int col);
+	void InvertItem(int row, int col);
 
 	byte *StoreAsByteArray();
 

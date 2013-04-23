@@ -78,6 +78,8 @@ BinaryMatrix::BinaryMatrix(int rowSize, int colSize) {
 	_row = rowSize;
 	_col = colSize;
 
+	_matrixArr = null;
+
 	InitMatrixArray();
 };
 
@@ -165,7 +167,7 @@ BinaryMatrix *BinaryMatrix::Mul(BinaryMatrix *other) {
 		for (int j = 0; j < GetColCount(); j++) {				
 			bool temp;
 			for (int r = 0; r < _col; r++) {
-				temp |= GetItem(i, r) & other->GetItem(r, j);
+				temp = temp || (GetItem(i, r) && other->GetItem(r, j));
 			}
 			matrix->SetItem(i, j, temp);
 		}
@@ -206,6 +208,10 @@ BinaryMatrix *BinaryMatrix::CreateVectorFromBinaryData(byte *data, int bitLen) {
 bool BinaryMatrix::IsSubMatrixEquals(int rowStart, int rowEnd, int colStart, int colEnd, BinaryMatrix *other) {
 	for (int i = rowStart; i <= rowEnd; i++)
 		for (int j = colStart; j <= colEnd; j++)
-			if (GetItem(i, j) != other->GetItem())
+			if (GetItem(i, j) != other->GetItem(i - rowStart, j - colStart)) return false;
 	return true;
+};
+
+void BinaryMatrix::InvertItem(int row, int col) {
+	this->SetItem(row, col, !GetItem(row, col));
 };

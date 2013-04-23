@@ -32,18 +32,21 @@ void HemmingCoder::InitIdentityGeneratingMatrix() {
 	_identityGeneratingMatrix = BinaryMatrix::CreateIdentityMatrix(_dataBlockLen);
 };
 
-void HemmingCoder::InitCheckingMatrix() {
-	_checkingMatrix = _pMatrix->ConcatWidth(_identityCheckingMatrix);
+void HemmingCoder::InitCheckingMatrix() {	
+	BinaryMatrix *pMatrixTranspose = _pMatrix->Transpose();
+	_checkingMatrix = pMatrixTranspose->ConcatHeight( _identityCheckingMatrix );
+	BaseClass::Clean(pMatrixTranspose);
 };
 
 void HemmingCoder::InitGeneratingMatrix() {
+	
 	BinaryMatrix *pMatrixTranspose = _pMatrix->Transpose();
 	_generatingMatrix = _identityGeneratingMatrix->ConcatWidth( pMatrixTranspose );
 	BaseClass::Clean(pMatrixTranspose);
 };
 
 void HemmingCoder::InitPMatrix() {
-	PMatrixColGenerator pMatrixColGen(_dataBlockLen);
+	PMatrixColGenerator pMatrixColGen(_additionalBlockLen);
 	int pRowCount = _additionalBlockLen;
 	int pColCount = _dataBlockLen;
 	_pMatrix = new BinaryMatrix(pRowCount, pColCount);
@@ -70,13 +73,6 @@ void HemmingCoder::InitPMatrix() {
 	}
 };
 
-void HemmingCoder::FixErrorBySyndrome(BinaryMatrix *receivedVector, BinaryMatrix *syndrome) {
-	byte *syndromeArr = syndrome->StoreAsByteArray();
-	byte syndromeByte = syndromeArr[0];
-	int fixIndex = syndromeByte;
-	receivedVector->SetItem(0, fixIndex, !receivedVector->GetItem(0, fixIndex));
-};
-
 byte *HemmingCoder::Encode(byte* src)
 {
 	BinaryMatrix *originalDataVector = BinaryMatrix::CreateVectorFromBinaryData(src, _dataBlockLen);
@@ -93,14 +89,19 @@ byte *HemmingCoder::Decode(byte* src)
 {
 	BinaryMatrix *receivedVector = BinaryMatrix::CreateVectorFromBinaryData(src, _entireBlockLen);
 	BinaryMatrix *syndromeVector = receivedVector->Mul(_checkingMatrix);
-
-	bool errorOccurred = syndromeVector->IsZero();
+	bool errorOccurred = !syndromeVector->IsZero();
 
 	if (errorOccurred) {
-		FixErrorBySyndrome(receivedVector, syndromeVector);
+		for (int i = 0; i < _entireBlockLen; i++) {
+			if (_checkingMatrix->IsSubMatrixEquals(i, i, 0, syndromeVector->GetColCount() - 1, syndromeVector))
+			{
+				receivedVector->InvertItem(0, i);
+				break;
+			}
+		}
 	};
 
-	BinaryMatrix *decodedMatrix = receivedVector->Crop(0, 0, 0, _dataBlockLen);
+	BinaryMatrix *decodedMatrix = receivedVector->Crop(0, 0, 0, _dataBlockLen - 1);
 	byte *decodedData = decodedMatrix->StoreAsByteArray();
 
 	BaseClass::Clean(receivedVector);
