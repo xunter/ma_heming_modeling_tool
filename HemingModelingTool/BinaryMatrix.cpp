@@ -78,32 +78,37 @@ BinaryMatrix::BinaryMatrix(int rowSize, int colSize) {
 	_row = rowSize;
 	_col = colSize;
 
-	_matrixArr = null;
+	_matrixMemory = null;
 
 	InitMatrixArray();
 };
 
 BinaryMatrix::~BinaryMatrix() {
+	free(_matrixMemory);
+	/*
 	for (int i = 0; i < _row; i++) {
 		delete [] _matrixArr[i];
 	}
 	delete [] _matrixArr;
+	*/
 };
 
 void BinaryMatrix::InitMatrixArray() {	
-	bool **matrix = new bool*[_row];
+	_matrixMemory = (bool *)malloc(sizeof(bool) * _row * _col);
+
 	for (int i = 0; i < _row; i++) {
-		matrix[i] = new bool[_col];
+		for (int j = 0; j < _col; j++) {
+			SetItem(i, j, false);
+		}
 	}
-	_matrixArr = matrix;
 };
 
 void BinaryMatrix::SetItem(int row, int col, bool val) {
-	_matrixArr[row][col] = val;
+	_matrixMemory[row * _col + col] = val;
 };
 
 bool BinaryMatrix::GetItem(int row, int col) {
-	return _matrixArr[row][col];
+	return _matrixMemory[row * _col + col];
 };
 
 BinaryMatrix *BinaryMatrix::Transpose() {
@@ -162,10 +167,12 @@ BinaryMatrix *BinaryMatrix::ConcatHeight(BinaryMatrix *other) {
 
 BinaryMatrix *BinaryMatrix::Mul(BinaryMatrix *other) {
 	if (_col != other->GetRowCount()) return null;
-	BinaryMatrix *matrix = new BinaryMatrix(_row, other->GetColCount());
-	for (int i = 0; i < _row; i++) {
-		for (int j = 0; j < GetColCount(); j++) {				
-			bool temp;
+	int resultMatrixRowCount = _row;
+	int resultMatrixColCount = other->GetColCount();
+	BinaryMatrix *matrix = new BinaryMatrix(resultMatrixRowCount, resultMatrixColCount);
+	for (int i = 0; i < resultMatrixRowCount; i++) {
+		for (int j = 0; j < resultMatrixColCount; j++) {				
+			bool temp = false;
 			for (int r = 0; r < _col; r++) {
 				temp = temp || (GetItem(i, r) && other->GetItem(r, j));
 			}
@@ -194,7 +201,7 @@ BinaryMatrix *BinaryMatrix::CreateVectorFromBinaryData(byte *data, int bitLen) {
 		byte b = data[i];
 		for (int j = 0; j < BYTE_BIT_LEN; j++) {
 			int itemIndex = i * BYTE_BIT_LEN + j;
-			if (itemIndex <= bitLen) {
+			if (itemIndex < bitLen) {
 				byte bitByte = ByteUtil::GetOnlyBitByte(b, j);
 				if (bitByte != 0) {
 					matrix->SetItem(0, itemIndex, true);

@@ -40,7 +40,7 @@ byte *ByteUtil::CopyData(byte *data, int len) {
 };
 
 byte ByteUtil::GetOnlyBitByte(byte &b, int bitPos) {		
-	byte mask = (byte)pow(2.0, bitPos);
+	byte mask = (byte)pow(2.0, BYTE_BIT_LEN - bitPos - 1);
 	return b & mask;
 };
 

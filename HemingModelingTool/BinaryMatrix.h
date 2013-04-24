@@ -4,7 +4,7 @@
 
 class BinaryMatrix : public BaseClass {
 private:
-	bool **_matrixArr;
+	bool *_matrixMemory;
 	int _row;
 	int _col;
 
