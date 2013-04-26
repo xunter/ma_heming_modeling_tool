@@ -65,9 +65,10 @@ byte *BinaryMatrix::StoreAsByteArray() {
 				arrIndex++;
 				arr[arrIndex] = 0x00;
 			}
-			byte tempByte = arr[arrIndex];
+			byte *tempByte = &arr[arrIndex];
 			if (item == true) {
-				ByteUtil::SetBit(tempByte, byteFillCounter);
+				ByteUtil::SetBit(*tempByte, byteFillCounter);
+				int d = 0;
 			}
 		}
 	}
