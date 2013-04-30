@@ -173,8 +173,17 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "Encoded block bits: " << encodedBlockLen << endl;
 	cout << "Noise probability: " << p0 * 100 << " %" << endl;
 
+	byte testData = 96;
+	
+
 	HemmingCoder *coder = new HemmingCoder(dataBlockLen, encodedBlockLen, m);
 	coder->Init();
+
+	byte *encodedData = coder->Encode(&testData);
+	byte *decodedData = coder->Decode(encodedData);
+
+
+	return 0;
 	//Coder *coder = new FakeCoder(dataBlockLen, m);
 	DataBlockGenerator *generator = new RandomDataBlockGenerator(dataBlockLen);
 	byte* b = generator->GenerateBlock();

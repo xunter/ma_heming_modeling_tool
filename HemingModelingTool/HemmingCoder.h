@@ -16,6 +16,7 @@ private:
 	void InitPMatrix();
 	void InitGeneratingMatrix();
 	void InitCheckingMatrix();
+
 public:
 	HemmingCoder(int dataBlockLen, int entireBlockLen, int additionalBlockLen);
 	~HemmingCoder();

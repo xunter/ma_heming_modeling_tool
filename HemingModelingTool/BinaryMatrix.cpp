@@ -105,10 +105,12 @@ void BinaryMatrix::InitMatrixArray() {
 };
 
 void BinaryMatrix::SetItem(int row, int col, bool val) {
+	if (row < 0 || col < 0 || row > _row - 1 || col > _col - 1) throw new std::exception("Index is out of the range!");
 	_matrixMemory[row * _col + col] = val;
 };
 
 bool BinaryMatrix::GetItem(int row, int col) {
+	if (row < 0 || col < 0 || row > _row - 1 || col > _col - 1) throw new std::exception("Index is out of the range!");
 	return _matrixMemory[row * _col + col];
 };
 
@@ -175,7 +177,8 @@ BinaryMatrix *BinaryMatrix::Mul(BinaryMatrix *other) {
 		for (int j = 0; j < resultMatrixColCount; j++) {				
 			bool temp = false;
 			for (int r = 0; r < _col; r++) {
-				temp = temp || (GetItem(i, r) && other->GetItem(r, j));
+				bool tempConjunction = GetItem(i, r) && other->GetItem(r, j);
+				temp = Xor(temp, tempConjunction);
 			}
 			matrix->SetItem(i, j, temp);
 		}
@@ -222,4 +225,91 @@ bool BinaryMatrix::IsSubMatrixEquals(int rowStart, int rowEnd, int colStart, int
 
 void BinaryMatrix::InvertItem(int row, int col) {
 	this->SetItem(row, col, !GetItem(row, col));
+};
+
+
+void BinaryMatrix::SortColumnsAsc() {
+	int itemsLen = _col;
+	bool swapped = true;
+	int n = 0;
+	while (swapped) {
+		swapped = false;
+		for (int i = 0; i < itemsLen - n - 1; i++) {
+			int j = i + 1;
+			if (CompareColumns(i, j) > 0) {
+				SwapColumns(i, j);
+				swapped = true;
+			}
+			n++;
+		}
+
+	}
+};
+
+int BinaryMatrix::CompareColumns(int leftIndex, int rightIndex) {
+	for (int i = 0; i < _row; i++) {
+		bool leftItem = GetItem(i, leftIndex);
+		bool rightItem = GetItem(i, rightIndex);
+		if (rightItem != leftItem) {
+			if (leftItem == true) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+	}
+	return 0;
+};
+
+void BinaryMatrix::SwapColumns(int leftIndex, int rightIndex) {
+	for (int i = 0; i < _row; i++) {
+		bool temp = GetItem(i, leftIndex);
+		SetItem(i, leftIndex, GetItem(i, rightIndex));
+		SetItem(i, rightIndex, temp);
+	}
+};
+
+void BinaryMatrix::SortRowsAsc() {
+	int itemsLen = _row;
+	bool swapped = true;
+	int n = 0;
+	while (swapped) {
+		swapped = false;
+		for (int i = 0; i < itemsLen - n - 1; i++) {
+			int j = i + 1;
+			if (CompareRows(i, j) > 0) {
+				SwapRows(i, j);
+				swapped = true;
+			}
+			n++;
+		}
+
+	}
+};
+
+int BinaryMatrix::CompareRows(int leftIndex, int rightIndex) {
+	for (int i = 0; i < _col; i++) {
+		bool leftItem = GetItem(leftIndex, i);
+		bool rightItem = GetItem(rightIndex, i);
+		if (rightItem != leftItem) {
+			if (leftItem == true) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+	}
+	return 0;
+};
+
+void BinaryMatrix::SwapRows(int leftIndex, int rightIndex) {
+	for (int i = 0; i < _col; i++) {
+		bool temp = GetItem(leftIndex, i);
+		SetItem(leftIndex, i, GetItem(rightIndex, i));
+		SetItem(rightIndex, i, temp);
+	}
+};
+
+bool BinaryMatrix::Xor(bool &left, bool &right) {
+	return left != right;
 };

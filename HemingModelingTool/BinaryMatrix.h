@@ -9,6 +9,8 @@ private:
 	int _col;
 
 	void InitMatrixArray();
+	
+	bool Xor(bool &left, bool &right);
 public:
 	BinaryMatrix(int rowSize, int colSize);
 	~BinaryMatrix();
@@ -18,6 +20,14 @@ public:
 	void SetItem(int row, int col, bool val);
 	bool GetItem(int row, int col);
 	void InvertItem(int row, int col);
+
+	void SortColumnsAsc();	
+	int CompareColumns(int leftIndex, int rightIndex);
+	void SwapColumns(int leftIndex, int rightIndex);
+	
+	void SortRowsAsc();	
+	int CompareRows(int leftIndex, int rightIndex);
+	void SwapRows(int leftIndex, int rightIndex);
 
 	byte *StoreAsByteArray();
 
@@ -29,6 +39,7 @@ public:
 	int GetBitsLength();
 	bool IsVector();
 	bool IsZero();
+
 
 	bool IsSubMatrixEquals(int rowStart, int rowEnd, int colStart, int colEnd, BinaryMatrix *other);
 	

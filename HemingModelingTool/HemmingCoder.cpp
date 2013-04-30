@@ -35,6 +35,7 @@ void HemmingCoder::InitIdentityGeneratingMatrix() {
 void HemmingCoder::InitCheckingMatrix() {	
 	BinaryMatrix *pMatrixTranspose = _pMatrix->Transpose();
 	_checkingMatrix = pMatrixTranspose->ConcatHeight( _identityCheckingMatrix );
+	_checkingMatrix->SortRowsAsc();
 	BaseClass::Clean(pMatrixTranspose);
 };
 
@@ -92,6 +93,15 @@ byte *HemmingCoder::Decode(byte* src)
 	bool errorOccurred = !syndromeVector->IsZero();
 
 	if (errorOccurred) {
+		byte bitIndex = 0x00;
+		for (int i = 0; i < syndromeVector->GetColCount(); i++) {
+			if (syndromeVector->GetItem(0, i) == true) {
+				ByteUtil::SetBit(bitIndex, i);
+			}
+		}
+		receivedVector->InvertItem(0, bitIndex - 1);
+
+		/*
 		for (int i = 0; i < _entireBlockLen; i++) {
 			if (_checkingMatrix->IsSubMatrixEquals(i, i, 0, syndromeVector->GetColCount() - 1, syndromeVector))
 			{
@@ -99,6 +109,7 @@ byte *HemmingCoder::Decode(byte* src)
 				break;
 			}
 		}
+		*/
 	};
 
 	BinaryMatrix *decodedMatrix = receivedVector->Crop(0, 0, 0, _dataBlockLen - 1);
@@ -109,4 +120,4 @@ byte *HemmingCoder::Decode(byte* src)
 	BaseClass::Clean(decodedMatrix);
 
 	return decodedData;
-}
+};
