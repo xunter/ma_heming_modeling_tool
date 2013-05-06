@@ -11,6 +11,7 @@ HemmingCoder::HemmingCoder(int dataBlockLen, int entireBlockLen, int additionalB
 HemmingCoder::~HemmingCoder() {
 	BaseClass::Clean(_generatingMatrix);
 	BaseClass::Clean(_checkingMatrix);
+	BaseClass::Clean(_checkingMatrixSorted);
 	BaseClass::Clean(_pMatrix);
 	BaseClass::Clean(_identityGeneratingMatrix);
 	BaseClass::Clean(_identityCheckingMatrix);
@@ -35,7 +36,8 @@ void HemmingCoder::InitIdentityGeneratingMatrix() {
 void HemmingCoder::InitCheckingMatrix() {	
 	BinaryMatrix *pMatrixTranspose = _pMatrix->Transpose();
 	_checkingMatrix = pMatrixTranspose->ConcatHeight( _identityCheckingMatrix );
-	_checkingMatrix->SortRowsAsc();
+	_checkingMatrixSorted = _checkingMatrix->Copy();
+	_checkingMatrixSorted->SortRowsAsc();
 	BaseClass::Clean(pMatrixTranspose);
 };
 

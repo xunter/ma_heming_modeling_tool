@@ -31,6 +31,7 @@ public:
 
 	byte *StoreAsByteArray();
 
+	BinaryMatrix *Copy();
 	BinaryMatrix *Transpose();
 	BinaryMatrix *ConcatWidth(BinaryMatrix *other);
 	BinaryMatrix *ConcatHeight(BinaryMatrix *other);

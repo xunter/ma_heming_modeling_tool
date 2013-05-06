@@ -1,3 +1,5 @@
+#pragma once
+
 #include "StdAfx.h"
 #include "BaseClass.h"
 

@@ -7,6 +7,7 @@ private:
 	int _dataBlockLen, _entireBlockLen, _additionalBlockLen;	
 	BinaryMatrix *_generatingMatrix;
 	BinaryMatrix *_checkingMatrix;
+	BinaryMatrix *_checkingMatrixSorted;
 	BinaryMatrix *_identityGeneratingMatrix;
 	BinaryMatrix *_identityCheckingMatrix;
 	BinaryMatrix *_pMatrix;

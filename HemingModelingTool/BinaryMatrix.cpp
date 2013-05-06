@@ -58,17 +58,16 @@ byte *BinaryMatrix::StoreAsByteArray() {
 	for (int i = 0; i < _row; i++) {
 		for (int j = 0; j < _col; j++) {
 			bool item = GetItem(i, j);
-			if (byteFillCounter < BYTE_BIT_LEN) {
-				byteFillCounter++;
-			} else {
-				byteFillCounter = 0;
-				arrIndex++;
-				arr[arrIndex] = 0x00;
-			}
 			byte *tempByte = &arr[arrIndex];
 			if (item == true) {
 				ByteUtil::SetBit(*tempByte, byteFillCounter);
-				int d = 0;
+			}
+			
+			byteFillCounter++;
+			if (byteFillCounter == BYTE_BIT_LEN) {
+				byteFillCounter = 0;
+				arrIndex++;
+				arr[arrIndex] = 0x00;
 			}
 		}
 	}
@@ -312,4 +311,14 @@ void BinaryMatrix::SwapRows(int leftIndex, int rightIndex) {
 
 bool BinaryMatrix::Xor(bool &left, bool &right) {
 	return left != right;
+};
+
+BinaryMatrix *BinaryMatrix::Copy() {
+	BinaryMatrix *matrix = new BinaryMatrix(_row, _col);
+	for (int i = 0; i < _row; i++) {
+		for (int j = 0; j < _col; j++) {
+			matrix->SetItem(i, j, GetItem(i, j));
+		}
+	}
+	return matrix;
 };

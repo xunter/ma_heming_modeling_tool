@@ -101,11 +101,11 @@ void ByteUtil::QSort(byte *arr, int min, int max) {
     QSort(arr, min, begin - arr);
     // Partiion right
     QSort(arr, end - arr, max);	
-}
+};
 
 void ByteUtil::SwapBytes(byte *num, byte *num2)
 {
     int temp = *num;
     *num = *num2;
     *num2 = temp;
-}
+};
