@@ -66,6 +66,14 @@ void ByteUtil::UnsetBit(byte &b, int bitPos) {
 	b &= InvertByte(GetOnlyBitByte(ffByte, bitPos));
 };
 
+void ByteUtil::InvertBit(byte &b, int bitPos) {
+	if (IsBitSettedInByte(b, bitPos)) {
+		UnsetBit(b, bitPos);
+	} else {
+		SetBit(b, bitPos);
+	}
+};
+
 bool ByteUtil::IsBitSettedInByte(byte &b, int bitPos) {
 	byte bitByte = GetOnlyBitByte(b, bitPos);
 	return bitByte != 0x00;

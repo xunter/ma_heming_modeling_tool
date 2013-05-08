@@ -26,7 +26,4 @@ typedef unsigned char byte;
 #include "BaseClass.h"
 #include "ByteUtil.h"
 
-
-
-
 // TODO: reference additional headers your program requires here

@@ -20,6 +20,7 @@ public:
 	static byte InvertByte(byte b);
 	static void SetBit(byte &b, int bitPos);
 	static void UnsetBit(byte &b, int bitPos);
+	static void InvertBit(byte &b, int bitPos);
 	static bool IsBitSettedInByte(byte &b, int bitPos);
 
 	void ByteUtil::QSort(byte *arr, int min, int max);

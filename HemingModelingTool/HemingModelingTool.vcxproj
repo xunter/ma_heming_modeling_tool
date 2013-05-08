@@ -82,6 +82,10 @@
     <ClInclude Include="DataBlockGenerator.h" />
     <ClInclude Include="FakeCoder.h" />
     <ClInclude Include="HemmingCoder.h" />
+    <ClInclude Include="ModelingEngine.h" />
+    <ClInclude Include="ModelingResultConsoleItemStorage.h" />
+    <ClInclude Include="ModelingResultItem.h" />
+    <ClInclude Include="ModelingResultItemStorage.h" />
     <ClInclude Include="PMatrixColGenerator.h" />
     <ClInclude Include="RandomDataBlockGenerator.h" />
     <ClInclude Include="stdafx.h" />
@@ -96,6 +100,10 @@
     <ClCompile Include="FakeCoder.cpp" />
     <ClCompile Include="MainEntryPoint.cpp" />
     <ClCompile Include="HemmingCoder.cpp" />
+    <ClCompile Include="ModelingEngine.cpp" />
+    <ClCompile Include="ModelingResultConsoleItemStorage.cpp" />
+    <ClCompile Include="ModelingResultItem.cpp" />
+    <ClCompile Include="ModelingResultItemStorage.cpp" />
     <ClCompile Include="PMatrixColGenerator.cpp" />
     <ClCompile Include="RandomDataBlockGenerator.cpp" />
     <ClCompile Include="stdafx.cpp">

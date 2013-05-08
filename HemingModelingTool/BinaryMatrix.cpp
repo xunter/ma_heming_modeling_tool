@@ -274,15 +274,15 @@ void BinaryMatrix::SortRowsAsc() {
 	int n = 0;
 	while (swapped) {
 		swapped = false;
-		for (int i = 0; i < itemsLen - n - 1; i++) {
+		int loopCount = itemsLen - n - 1;
+		for (int i = 0; i < loopCount; i++) {
 			int j = i + 1;
 			if (CompareRows(i, j) > 0) {
 				SwapRows(i, j);
 				swapped = true;
 			}
-			n++;
 		}
-
+		n++;
 	}
 };
 
@@ -321,4 +321,14 @@ BinaryMatrix *BinaryMatrix::Copy() {
 		}
 	}
 	return matrix;
+};
+
+void BinaryMatrix::DisplayConsole(char *name) {
+	cout << name << "[" << _row << "x" << _col << "]:" << endl;
+	for (int i = 0; i < _row; i++) {
+		for (int j = 0; j < _col; j++) {
+			cout << " " << (GetItem(i, j) ? "1" : "0");
+		}
+		cout << endl;
+	}
 };

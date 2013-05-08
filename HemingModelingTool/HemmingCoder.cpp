@@ -27,17 +27,22 @@ void HemmingCoder::Init() {
 
 void HemmingCoder::InitIdentityCheckingMatrix() {
 	_identityCheckingMatrix = BinaryMatrix::CreateIdentityMatrix(_additionalBlockLen);
+	_identityCheckingMatrix->DisplayConsole("Hi");
 };
 
 void HemmingCoder::InitIdentityGeneratingMatrix() {
 	_identityGeneratingMatrix = BinaryMatrix::CreateIdentityMatrix(_dataBlockLen);
+	_identityGeneratingMatrix->DisplayConsole("Gi");
 };
 
 void HemmingCoder::InitCheckingMatrix() {	
 	BinaryMatrix *pMatrixTranspose = _pMatrix->Transpose();
+	pMatrixTranspose->DisplayConsole("Pt");
 	_checkingMatrix = pMatrixTranspose->ConcatHeight( _identityCheckingMatrix );
+	_checkingMatrix->DisplayConsole("H");
 	_checkingMatrixSorted = _checkingMatrix->Copy();
 	_checkingMatrixSorted->SortRowsAsc();
+	_checkingMatrixSorted->DisplayConsole("Hs");
 	BaseClass::Clean(pMatrixTranspose);
 };
 
@@ -45,6 +50,7 @@ void HemmingCoder::InitGeneratingMatrix() {
 	
 	BinaryMatrix *pMatrixTranspose = _pMatrix->Transpose();
 	_generatingMatrix = _identityGeneratingMatrix->ConcatWidth( pMatrixTranspose );
+	_generatingMatrix->DisplayConsole("G");
 	BaseClass::Clean(pMatrixTranspose);
 };
 
@@ -74,12 +80,17 @@ void HemmingCoder::InitPMatrix() {
 		}
 		BaseClass::Clean(pMatrixCol);
 	}
+
+	_pMatrix->DisplayConsole("P");
 };
 
 byte *HemmingCoder::Encode(byte* src)
 {
 	BinaryMatrix *originalDataVector = BinaryMatrix::CreateVectorFromBinaryData(src, _dataBlockLen);
+	originalDataVector->DisplayConsole("A");
 	BinaryMatrix *encodedMatrix = originalDataVector->Mul(_generatingMatrix);
+
+	encodedMatrix->DisplayConsole("E");
 	byte *encodedData = encodedMatrix->StoreAsByteArray();
 
 	BaseClass::Clean(originalDataVector);
@@ -91,14 +102,20 @@ byte *HemmingCoder::Encode(byte* src)
 byte *HemmingCoder::Decode(byte* src)
 {
 	BinaryMatrix *receivedVector = BinaryMatrix::CreateVectorFromBinaryData(src, _entireBlockLen);
-	BinaryMatrix *syndromeVector = receivedVector->Mul(_checkingMatrix);
+
+	receivedVector->DisplayConsole("R");
+
+	BinaryMatrix *syndromeVector = receivedVector->Mul(_checkingMatrixSorted);
+	syndromeVector->DisplayConsole("S");
 	bool errorOccurred = !syndromeVector->IsZero();
 
 	if (errorOccurred) {
 		byte bitIndex = 0x00;
-		for (int i = 0; i < syndromeVector->GetColCount(); i++) {
+		int colLen = syndromeVector->GetColCount();
+		int syndromeBitIndexShift = BYTE_BIT_LEN - colLen;
+		for (int i = 0; i < colLen; i++) {
 			if (syndromeVector->GetItem(0, i) == true) {
-				ByteUtil::SetBit(bitIndex, i);
+				ByteUtil::SetBit(bitIndex, syndromeBitIndexShift + i);
 			}
 		}
 		receivedVector->InvertItem(0, bitIndex - 1);
@@ -115,6 +132,7 @@ byte *HemmingCoder::Decode(byte* src)
 	};
 
 	BinaryMatrix *decodedMatrix = receivedVector->Crop(0, 0, 0, _dataBlockLen - 1);
+	decodedMatrix->DisplayConsole("D");
 	byte *decodedData = decodedMatrix->StoreAsByteArray();
 
 	BaseClass::Clean(receivedVector);
