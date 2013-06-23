@@ -15,6 +15,7 @@ ModelingResultItem *ModelingEngine::Simulate() {
 	_generator->GetDataBlockLength();
 
 	int dataBlockBytesLen = _generator->GetDataBlockBytesLength();
+	int bytesLen = ByteUtil::GetByteLenForDataLen(dataBlockBytesLen);
 
 	ModelingResultItem *item = new ModelingResultItem(dataBlockBytesLen);
 	byte *originalData = _generator->GenerateBlock();
@@ -26,8 +27,16 @@ ModelingResultItem *ModelingEngine::Simulate() {
 	byte *noisedData = MakeNoise(encodedData);
 	item->SetReceivedBlock(noisedData);
 
+	bool equal = ByteUtil::IsDataEqual(encodedData, noisedData, bytesLen, dataBlockBytesLen);
+	if (!equal) {
+		_noiseCounter++;
+	}
+
 	byte *decodedData = _coder->Decode(noisedData);
 	item->SetDecodedBlock(decodedData);
+
+	int bitDiffCount = ByteUtil::ComputeBitDiff(originalData, decodedData, dataBlockBytesLen);
+	item->SetBitDiffCount(bitDiffCount);
 
 	return item;
 }
@@ -65,3 +74,8 @@ byte *ModelingEngine::MakeNoise(byte *data) {
 
 	return noisedData;
 };
+
+int ModelingEngine::GetNoiseCount()
+{
+	return _noiseCounter;
+}

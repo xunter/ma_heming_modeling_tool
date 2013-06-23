@@ -18,9 +18,17 @@ void ModelingResultItem::SetDecodedBlock(byte *data) {
 };
 
 bool ModelingResultItem::IsResultEqualsOriginal() {
-	return ByteUtil::IsDataEqual(_srcBlock, _decodedBlock, _originalDataLen);
+	return ByteUtil::IsDataEqual(_srcBlock, _decodedBlock, _originalDataLen, _originalDataLen);
 };
 
 ModelingResultItem::ModelingResultItem(int originalDataLen) {
 	_originalDataLen = originalDataLen;
 };
+
+void ModelingResultItem::SetBitDiffCount(int count) {
+	_bitDiffCount = count;
+}
+
+int ModelingResultItem::GetBitDiffCount() {
+	return _bitDiffCount;
+}

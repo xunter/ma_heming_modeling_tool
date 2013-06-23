@@ -26,9 +26,25 @@ void ByteUtil::ShowDataBlockOnConsole(byte *dataBlock, int dataBlockLen) {
 	cout << endl;
 };
 
-bool ByteUtil::IsDataEqual(byte *dataFirst, byte *dataSecond, int dataLen) {
-	for (int i = 0; i < dataLen; i++) {
-		if (dataFirst[i] != dataSecond[i]) return false;
+bool ByteUtil::IsDataEqual(byte *left, byte *right, int dataLen, int bitLength) {
+	int byteLen = ByteUtil::GetByteLenForDataLen(bitLength);
+	int bitCounter = 0;
+	for (int i = 0; i < byteLen; i++) {
+		byte eachLeftByte = left[i];
+		byte eachRightByte = right[i];
+		for (int j = 0; j < BYTE_BIT_LEN; j++) {
+			if (bitCounter > bitLength) {
+				break;
+			}
+			int bitPos = j;
+			bool leftBit = ByteUtil::IsBitSettedInByte(eachLeftByte, bitPos);
+			bool rightBit = ByteUtil::IsBitSettedInByte(eachRightByte, bitPos);
+			bool areBitsEqual = leftBit == rightBit;
+			if (!areBitsEqual) {
+				return false;
+			}
+			bitCounter++;
+		}
 	}
 	return true;
 };
@@ -117,3 +133,28 @@ void ByteUtil::SwapBytes(byte *num, byte *num2)
     *num = *num2;
     *num2 = temp;
 };
+int ByteUtil::ComputeBitDiff(byte *left, byte *right, int len) 
+{
+	int counter = 0;
+	int byteLen = ByteUtil::GetByteLenForDataLen(len);
+	int bitCounter = 0;
+	int bitIter = 0;
+	for (int i = 0; i < byteLen; i++) {
+		byte eachLeftByte = left[i];
+		byte eachRightByte = right[i];
+		for (int j = 0; j < BYTE_BIT_LEN; j++) {
+			if (bitCounter > len) {
+				break;
+			}
+			int bitPos = j;
+			bool leftBit = ByteUtil::IsBitSettedInByte(eachLeftByte, bitPos);
+			bool rightBit = ByteUtil::IsBitSettedInByte(eachRightByte, bitPos);
+			bool areBitsEqual = leftBit == rightBit;
+			if (!areBitsEqual) {
+				counter++;
+			}
+			bitCounter++;
+		}
+	}
+	return counter;
+}

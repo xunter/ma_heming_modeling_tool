@@ -14,7 +14,7 @@ public:
 
 	// Распечатывает содержимое массива байт с заданным размером на консоле в hex
 	static void ShowDataBlockOnConsole(byte *dataBlock, int dataBlockLen);
-	static bool IsDataEqual(byte *dataFirst, byte *dataSecond, int dataLen);
+	static bool IsDataEqual(byte *dataFirst, byte *dataSecond, int dataLen, int bitLength);
 	static byte *CopyData(byte *data, int len);
 	static byte GetOnlyBitByte(byte &b, int bitPos);
 	static byte InvertByte(byte b);
@@ -25,4 +25,6 @@ public:
 
 	void ByteUtil::QSort(byte *arr, int min, int max);
 	void ByteUtil::SwapBytes(byte *num, byte *num2);
+
+	static int ByteUtil::ComputeBitDiff(byte *left, byte *right, int len);
 };

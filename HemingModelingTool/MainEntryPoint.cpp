@@ -100,18 +100,23 @@ int main(int argc, char *argv[])
 
 	float pResult = 0;
 	int failsCounter = 0;
+	int bitErrorCounter = 0;
 	for (int i = 0; i < stepCount; i++) {
 		ModelingResultItem *item = modelingEngine->Simulate();
 		itemStorage->Store(item);
 		if (!item->IsResultEqualsOriginal()) failsCounter++;
-
+		bitErrorCounter += item->GetBitDiffCount();
 		BaseClass::Clean(item);
 	}
 	
 	itemStorage->Complete();
 
+	float pNoise = (float)modelingEngine->GetNoiseCount() / (float)stepCount;
+	float pBitResult = (float)bitErrorCounter / (float)(stepCount * dataBlockLen);
 	pResult = (float)failsCounter / (float)stepCount;
-
+		
+	cout << "Result noise probability: " << pNoise * 100 << " %" << endl;
+	cout << "Result bit probability: " << pBitResult * 100 << " %" << endl;
 	cout << "Result probability: " << pResult * 100 << " %" << endl;
 
 	BaseClass::Clean(itemStorage);

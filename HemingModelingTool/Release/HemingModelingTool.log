@@ -1,15 +1,35 @@
-﻿Build started 5/8/2013 4:31:52 PM.
-     1>Project "C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\HemingModelingTool\HemingModelingTool.vcxproj" on node 2 (build target(s)).
-     1>InitializeBuildStatus:
+﻿Build started 6/24/2013 3:46:10 AM.
+     1>Project "C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\HemingModelingTool\HemingModelingTool.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Release\HemingModelingTool.lastbuildstate".
+       InitializeBuildStatus:
          Creating "Release\HemingModelingTool.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         All outputs are up-to-date.
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\HemingModelingTool.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt MainEntryPoint.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yc"StdAfx.h" /Fp"Release\HemingModelingTool.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+     1>c:\users\xunter\documents\education\ma_diser\practice\hemingmodelingtool\hemingmodelingtool\ByteUtil.h(30): warning C4091: 'static ' : ignored on left of 'ByteUtil' when no variable is declared
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Release\HemingModelingTool.pch" /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt BaseClass.cpp BinaryMatrix.cpp ByteUtil.cpp Coder.cpp DataBlockGenerator.cpp FakeCoder.cpp MainEntryPoint.cpp HemmingCoder.cpp ModelingEngine.cpp ModelingResultConsoleItemStorage.cpp ModelingResultItem.cpp ModelingResultItemStorage.cpp PMatrixColGenerator.cpp RandomDataBlockGenerator.cpp
+         BaseClass.cpp
+         BinaryMatrix.cpp
+         ByteUtil.cpp
+     1>ByteUtil.cpp(6): warning C4244: 'return' : conversion from 'float' to 'int', possible loss of data
+         Coder.cpp
+         DataBlockGenerator.cpp
+         FakeCoder.cpp
          MainEntryPoint.cpp
      1>MainEntryPoint.cpp(26): warning C4305: 'initializing' : truncation from 'double' to 'float'
      1>MainEntryPoint.cpp(79): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+         HemmingCoder.cpp
+         ModelingEngine.cpp
+     1>ModelingEngine.cpp(80): warning C4244: 'return' : conversion from 'float' to 'int', possible loss of data
+         ModelingResultConsoleItemStorage.cpp
+         ModelingResultItem.cpp
+         ModelingResultItemStorage.cpp
+         PMatrixColGenerator.cpp
+     1>PMatrixColGenerator.cpp(29): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
+         RandomDataBlockGenerator.cpp
        Link:
-         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\Release\HemingModelingTool.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\HemingModelingTool.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\Release\HemingModelingTool.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\Release\HemingModelingTool.lib" /MACHINE:X86 Release\BaseClass.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\Release\HemingModelingTool.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\HemingModelingTool.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\Release\HemingModelingTool.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\Release\HemingModelingTool.lib" /MACHINE:X86 Release\BaseClass.obj
          Release\BinaryMatrix.obj
          Release\ByteUtil.obj
          Release\Coder.obj
@@ -26,14 +46,14 @@
          Release\stdafx.obj
          Generating code
          Finished generating code
-         HemingModelingTool.vcxproj -> C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\Release\HemingModelingTool.exe
+         HemingModelingTool.vcxproj -> C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\Release\HemingModelingTool.exe
        Manifest:
-         c:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\Release\HemingModelingTool.exe;#1" /manifest Release\HemingModelingTool.exe.intermediate.manifest
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\Release\HemingModelingTool.exe;#1" /manifest Release\HemingModelingTool.exe.intermediate.manifest
        FinalizeBuildStatus:
          Deleting file "Release\HemingModelingTool.unsuccessfulbuild".
          Touching "Release\HemingModelingTool.lastbuildstate".
-     1>Done Building Project "C:\Users\xunter\Documents\Visual Studio 2010\Projects\ma\heming_modeling_tool\HemingModelingTool\HemingModelingTool.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\xunter\Documents\Education\ma_diser\practice\HemingModelingTool\HemingModelingTool\HemingModelingTool.vcxproj" (rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.63
+Time Elapsed 00:00:02.54
